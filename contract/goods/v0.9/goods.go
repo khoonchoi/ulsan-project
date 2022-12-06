@@ -19,8 +19,8 @@ type SmartContract struct {
 
 // 3. goods 구조체
 type Goods struct {
-	Serial  string `json:"make"`
-	Info  	string `json:"colour"`
+	Serial  string `json:"serial"`
+	Info  	string `json:"info"`
 	Owner  	string `json:"owner"`
 	Status	string `json:"status"` // registered, svc_requested , svc_responded, svc_completed, svc_paid 
 }
