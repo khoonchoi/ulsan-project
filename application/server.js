@@ -17,7 +17,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // fabric 연결설정
+//const ccpPath = path.resolve(__dirname, '..', 'ulsan-network','organizations','peerOrganizations','org1.example.com', 'connection-org1.json');
 const ccpPath = path.resolve(__dirname, 'connection-org1.json');
+
 const ccpJSON = fs.readFileSync(ccpPath, 'utf8');
 const ccp = JSON.parse(ccpJSON);
 
@@ -334,7 +336,7 @@ app.post('/user', async (req, res) => {
     } catch (error) {
 
         // client에게 결과 전송 - 실패
-        console.log('error occured in generating a certificate.');
+        console.log('error occured in generating a certificate.', error.message);
         const result_obj = JSON.parse('{"result":"fail", "error":"error occured in generating a certificate."}');
         res.send(result_obj);
     }

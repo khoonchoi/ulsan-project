@@ -101,7 +101,7 @@ func(s *SmartContract) Goods_query(ctx contractapi.TransactionContextInterface, 
 
 // goods_history (serial )
 func (t *SmartContract) Goods_history(ctx contractapi.TransactionContextInterface, serial string) ([]HistoryQueryResult, error) {
-	log.Printf("goods_history: ID %v", serial) // 체인코드 컨테이너 -> docker logs dev-asset1...
+	log.Printf("Goods_history: ID %v", serial) // 체인코드 컨테이너 -> docker logs dev-asset1...
 
 	resultsIterator, err := ctx.GetStub().GetHistoryForKey(serial)
 	if err != nil {
