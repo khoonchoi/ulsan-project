@@ -30,6 +30,7 @@ jq 설치
 
 채널 확인
 환경설정
+
 `export FABRIC_CFG_PATH=${PWD}/config`
 
 `export CORE_PEER_TLS_ENABLED=true`
