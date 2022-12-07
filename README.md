@@ -44,7 +44,7 @@ npm install
 node server.js
 
 브라우저 : 
-*네트워크를 초기화 했다면 
+## 네트워크를 초기화 했다면 
 1.지갑 폴더 지우기
 rm -rf wallet
 2. connection-org1.json 복사하기
