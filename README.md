@@ -8,17 +8,17 @@ jq 설치
 
 # 네트워크 수행
 네트워크 초기화 
-`docker rm -f $(docker ps -aq)
-docker rmi -f $(docker images dev-*)
-docker network prune
-docker volume prune`
+`docker rm -f $(docker ps -aq)`
+`docker rmi -f $(docker images dev-*)`
+`docker network prune`
+`docker volume prune`
 
 
-`cd 프로젝트경로/ulsan-network
-./startnetwork.sh
-./createchannel.sh
-./setAnchorPeerUpdate.sh
-./ccp-generate.sh`
+`cd 프로젝트경로/ulsan-network`
+`./startnetwork.sh`
+`./createchannel.sh`
+`./setAnchorPeerUpdate.sh`
+`./ccp-generate.sh``
 
 채널 확인
 환경설정
