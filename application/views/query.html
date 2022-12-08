@@ -66,12 +66,10 @@
               $("#query_result").append(res);
 
                // table update 
-              for(var i=0; i<data.message.length; i++){
                 $("#query_table").append("<tr><td>serial</td><td>"+data.serial+"</td></tr>");
                 $("#query_table").append("<tr><td>owner</td><td>"+data.owner+"</td></tr>");
                 $("#query_table").append("<tr><td>info</td><td>"+data.info+"</td></tr>");
                 $("#query_table").append("<tr><td>status</td><td>"+data.status+"</td></tr>");
-              }
 
           } else {
               $("#query_result").empty();

@@ -79,10 +79,10 @@ app.post('/health', async (req, res) => {
 // health 스테이트 조회
 app.get('/health', async (req, res) => {
     try {
-        const cert = req.query.gcert;
-        const gid = req.query.gid;
+        const cert = req.query.qcert;
+        const qid = req.query.qid;
 
-        console.log('/health-get-' + gid)
+        console.log('/health-get-' + qid)
 
         // 인증서 확인
         const walletPath = path.join(process.cwd(), 'wallet');
@@ -98,12 +98,12 @@ app.get('/health', async (req, res) => {
         }
         // GW -> CH -> CC
         const gateway = new Gateway();
-        await gateway.connect(ccp, { wallet, identity: 'admin', discovery: { enabled: true, asLocalhost: true } });
+        await gateway.connect(ccp, { wallet, identity: cert, discovery: { enabled: true, asLocalhost: true } });
 
         const network = await gateway.getNetwork('ulsanchannel');
         const contract = network.getContract('health');
 
-        const result = await contract.evaluateTransaction('Health_query', gid);
+        const result = await contract.evaluateTransaction('Health_query', qid);
         console.log(`Transaction has been evaluated, result is: ${result.toString()}`);
         await gateway.disconnect();
 
@@ -114,6 +114,7 @@ app.get('/health', async (req, res) => {
     } catch (error) {
         // client에게 결과 전송 - 실패
         console.log('error occured in generating in evaluating a transaction.');
+        console.log(error.message)
         const result_obj = JSON.parse('{"result":"fail", "error":"error occured in evaluating a transaction."}');
         res.send(result_obj);
     }
@@ -188,7 +189,7 @@ app.get('/goods', async (req, res) => {
         }
         // GW -> CH -> CC
         const gateway = new Gateway();
-        await gateway.connect(ccp, { wallet, identity: 'admin', discovery: { enabled: true, asLocalhost: true } });
+        await gateway.connect(ccp, { wallet, identity: cert, discovery: { enabled: true, asLocalhost: true } });
 
         const network = await gateway.getNetwork('ulsanchannel');
         const contract = network.getContract('goods');
