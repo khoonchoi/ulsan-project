@@ -1,9 +1,10 @@
 #!/bin/bash
 
-COMPOSE_FILE_CA=docker/docker-compose-ca.yaml
+COMPOSE_FILES_CA=docker/docker-compose-ca.yaml
 COMPOSE_FILES=docker/docker-compose-net.yaml
+COMPOSE_FILES_COUCH=docker/docker-compose-couch.yaml
 
-docker-compose -f $COMPOSE_FILES -f $COMPOSE_FILE_CA down --volumes --remove-orphans
+docker-compose -f $COMPOSE_FILES -f $COMPOSE_FILES_CA down --volumes --remove-orphans
 
 
 # cleen up the MSP directory
@@ -21,3 +22,5 @@ fi
 if [ -d "channel-artifacts" ]; then
     rm -Rf channel-artifacts/*
 fi
+
+docker rmi -f $(docker images dev-* -q)

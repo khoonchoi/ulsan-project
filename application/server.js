@@ -29,9 +29,99 @@ app.get('/', (req, res) => {
 });
 
 // REST 라우팅
+// health 등록
+app.post('/health', async (req, res) => {
+    // {cert, serial, email, info}
+    try {
+
+        const cert = req.body.rcert;
+        const id = req.body.rid;
+        const name = req.body.rname;
+        const code = req.body.rcode;
+
+        console.log('/health-post-' + cert + '-' + id + '-' + name + '-' + code)
+
+        // 인증서 확인
+        const walletPath = path.join(process.cwd(), 'wallet');
+        const wallet = await Wallets.newFileSystemWallet(walletPath);
+        console.log(`Wallet path: ${walletPath}`);
+        const identity = await wallet.get(cert);
+
+        if (!identity) {
+            console.log('An identity for the user user does not exist in the wallet');
+            console.log('Run the registerUser.js application before retrying');
+            const result_obj = JSON.parse('{"result":"fail", "error":"An identity for the user does not exist in the wallet"}');
+            res.send(result_obj);
+            return;
+        }
+        // GW -> CH -> CC
+        const gateway = new Gateway();
+        await gateway.connect(ccp, { wallet, identity: cert, discovery: { enabled: true, asLocalhost: true } });
+
+        const network = await gateway.getNetwork('ulsanchannel');
+        const contract = network.getContract('health');
+
+        await contract.submitTransaction('Health_register', id, name, "20221001", code, "KCM", "20221208");
+        console.log('Transaction has been submitted');
+        await gateway.disconnect();
+
+        // submit Transaction
+        const result_obj = JSON.parse('{"result":"success", "message":"Transaction has been submitted."}');
+        res.send(result_obj);
+    } catch (error) {
+        // client에게 결과 전송 - 실패
+        console.log('error occured in generating in submitting a transaction.');
+        const result_obj = JSON.parse('{"result":"fail", "error":"error occured in submitting a transaction."}');
+        res.send(result_obj);
+    }
+});
+
+// health 스테이트 조회
+app.get('/health', async (req, res) => {
+    try {
+        const cert = req.query.gcert;
+        const gid = req.query.gid;
+
+        console.log('/health-get-' + gid)
+
+        // 인증서 확인
+        const walletPath = path.join(process.cwd(), 'wallet');
+        const wallet = await Wallets.newFileSystemWallet(walletPath);
+        console.log(`Wallet path: ${walletPath}`);
+        const identity = await wallet.get(cert);
+        if (!identity) {
+            console.log('An identity for the user appUser does not exist in the wallet');
+            console.log('Run the registerUser.js application before retrying');
+            const result_obj = JSON.parse('{"result":"fail", "error":"An identity for the user does not exist in the wallet"}');
+            res.send(result_obj);
+            return;
+        }
+        // GW -> CH -> CC
+        const gateway = new Gateway();
+        await gateway.connect(ccp, { wallet, identity: 'admin', discovery: { enabled: true, asLocalhost: true } });
+
+        const network = await gateway.getNetwork('ulsanchannel');
+        const contract = network.getContract('health');
+
+        const result = await contract.evaluateTransaction('Health_query', gid);
+        console.log(`Transaction has been evaluated, result is: ${result.toString()}`);
+        await gateway.disconnect();
+
+        // submit Transaction
+        const result_obj = JSON.parse(`{"result":"success", "message":${result}}`);
+        res.send(result_obj);
+
+    } catch (error) {
+        // client에게 결과 전송 - 실패
+        console.log('error occured in generating in evaluating a transaction.');
+        const result_obj = JSON.parse('{"result":"fail", "error":"error occured in evaluating a transaction."}');
+        res.send(result_obj);
+    }
+});
+
 // 굿즈 등록
 app.post('/goods', async (req, res) => {
-// {cert, serial, email, info}
+    // {cert, serial, email, info}
     try {
 
         const cert = req.body.cert;
@@ -78,7 +168,7 @@ app.post('/goods', async (req, res) => {
 
 // 굿즈 스테이트 조회
 app.get('/goods', async (req, res) => {
-    try{
+    try {
         const cert = req.query.cert;
         const serial = req.query.serial;
 
